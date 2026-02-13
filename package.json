@@ -1,0 +1,35 @@
+{
+  "name": "ai-news-agent",
+  "version": "1.0.0",
+  "description": "AI 每日新闻采集，Tavily + Playwright MCP，GLM-5 摘要，钉钉推送，Railway Cron",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "daily": "tsx --env-file=.env src/jobs/daily-news.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch --env-file=.env src/jobs/daily-news.ts",
+    "playwright:install": "npx playwright install --with-deps",
+    "daily:send": "tsx --env-file=.env src/jobs/send-last.ts"
+  },
+  "keywords": ["ai", "news", "mcp", "tavily", "playwright", "dingtalk", "glm-5"],
+  "author": "liujie",
+  "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/mcp": "^1.0.0",
+    "ai": "^6.0.0",
+    "dotenv": "^16.4.7",
+    "zhipu-ai-provider": "^0.2.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "playwright": "^1.49.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.29.2"
+}
