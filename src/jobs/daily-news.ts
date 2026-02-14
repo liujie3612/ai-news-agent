@@ -3,9 +3,15 @@ import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { generateText, stepCountIs } from "ai";
-import { zhipu } from "zhipu-ai-provider";
+import { createQwen } from "qwen-ai-provider";
 import { getTavilyMcpTools } from "../tools/tavily-mcp.js";
 import { sendDingTalk } from "../tools/dingtalk.js";
+
+/** 阿里云百炼国际站（新加坡等），Qwen Plus */
+const qwen = createQwen({
+  apiKey: process.env.DASHSCOPE_API_KEY,
+  baseURL: "https://dashscope-intl.aliyuncs.com/api/v1",
+});
 
 export const LAST_DAILY_NEWS_FILE = join(process.cwd(), "last-daily-news.md");
 
@@ -90,7 +96,7 @@ export async function runDailyNewsJob(): Promise<void> {
     console.log("[2/3] 正在生成日报...");
 
     const { text } = await generateText({
-      model: zhipu("glm-5"),
+      model: qwen("qwen-plus") as unknown as Parameters<typeof generateText>[0]["model"],
       system: DAILY_NEWS_SYSTEM,
       prompt: DAILY_NEWS_PROMPT,
       tools,
@@ -143,18 +149,12 @@ export async function runDailyNewsJob(): Promise<void> {
 async function main() {
   console.log("启动 AI 每日要闻任务...");
 
-  if (!process.env.ZHIPU_API_KEY) {
-    console.error("ZHIPU_API_KEY 未设置");
-    process.exit(1);
-  }
-
-  if (!process.env.TAVILY_API_KEY) {
-    console.error("TAVILY_API_KEY 未设置");
-    process.exit(1);
-  }
-
-  if (!process.env.DINGTALK_WEBHOOK_URL) {
-    console.error("DINGTALK_WEBHOOK_URL 未设置");
+  // 部署环境自检：确认所需环境变量是否已注入（不打印具体值）
+  const required = ["DASHSCOPE_API_KEY", "TAVILY_API_KEY", "DINGTALK_WEBHOOK_URL"] as const;
+  const missing = required.filter((key) => !process.env[key]?.trim());
+  if (missing.length > 0) {
+    console.error("以下环境变量未设置或为空:", missing.join(", "));
+    console.error("若在 Railway 已配置，请保存后点击 Deployments → 最新部署 → Redeploy 重新部署");
     process.exit(1);
   }
 
