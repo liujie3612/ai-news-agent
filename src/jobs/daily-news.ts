@@ -96,7 +96,7 @@ export async function runDailyNewsJob(): Promise<void> {
     console.log("[2/3] 正在生成日报...");
 
     const { text } = await generateText({
-      model: dashscope("qwen-plus"),
+      model: dashscope.chat("qwen-plus"),
       system: DAILY_NEWS_SYSTEM,
       prompt: DAILY_NEWS_PROMPT,
       tools,
