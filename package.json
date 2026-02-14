@@ -25,9 +25,9 @@
   "license": "ISC",
   "dependencies": {
     "@ai-sdk/mcp": "^1.0.0",
+    "@ai-sdk/openai": "^3.0.29",
     "ai": "^6.0.0",
     "dotenv": "^16.4.7",
-    "qwen-ai-provider": "^0.1.1",
     "zhipu-ai-provider": "^0.2.0",
     "zod": "^3.25.76"
   },

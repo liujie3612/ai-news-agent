@@ -3,14 +3,14 @@ import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { generateText, stepCountIs } from "ai";
-import { createQwen } from "qwen-ai-provider";
+import { createOpenAI } from "@ai-sdk/openai";
 import { getTavilyMcpTools } from "../tools/tavily-mcp.js";
 import { sendDingTalk } from "../tools/dingtalk.js";
 
-/** 阿里云百炼国际站（新加坡等），Qwen Plus */
-const qwen = createQwen({
+/** 阿里云百炼国际站（新加坡）OpenAI 兼容接口，AI SDK v2 */
+const dashscope = createOpenAI({
   apiKey: process.env.DASHSCOPE_API_KEY,
-  baseURL: "https://dashscope-intl.aliyuncs.com/api/v1",
+  baseURL: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 });
 
 export const LAST_DAILY_NEWS_FILE = join(process.cwd(), "last-daily-news.md");
@@ -96,7 +96,7 @@ export async function runDailyNewsJob(): Promise<void> {
     console.log("[2/3] 正在生成日报...");
 
     const { text } = await generateText({
-      model: qwen("qwen-plus") as unknown as Parameters<typeof generateText>[0]["model"],
+      model: dashscope("qwen-plus"),
       system: DAILY_NEWS_SYSTEM,
       prompt: DAILY_NEWS_PROMPT,
       tools,
